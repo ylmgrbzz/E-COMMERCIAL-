@@ -71,7 +71,10 @@ function App() {
 
   return (
     <>
-      {!isSignUpPage && <Header />}
+      {/* {!isSignUpPage && <Header />}
+       */}
+      <Header />
+
       <Routes>
         <Route path="/product-list/" element={<ProductList />} />
         <Route path="/product/" element={<Product />} />
@@ -81,7 +84,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
-      {!isSignUpPage && <Footer />}
+      {/* {!isSignUpPage && <Footer />} */}
+      <Footer />
     </>
   );
 }
