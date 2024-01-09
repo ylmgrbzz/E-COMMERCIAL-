@@ -77,7 +77,6 @@ export const shoppingCartReducer = (
 // Store Reducer
 export const storeReducer = (state = { sellerStore: {} }, action) => {
   switch (action.type) {
-    // Basic set actions
     case "SET_SELLER_STORE":
       return { ...state, sellerStore: action.payload };
     default:
