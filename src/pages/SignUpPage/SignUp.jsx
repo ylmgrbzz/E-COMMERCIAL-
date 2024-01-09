@@ -16,6 +16,7 @@ const SignUp = () => {
   const baseURL = "https://workintech-fe-ecommerce.onrender.com";
   const [roles, setRoles] = useState([]);
   const navigate = useNavigate();
+  const watchedValues = watch();
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -31,20 +32,27 @@ const SignUp = () => {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log("data", data);
+    console.log("watchedValues", watchedValues);
+
     try {
       let formattedData = {
         name: data.name,
         email: data.email,
         password: data.password,
-        role_id: data.role,
+        role_id: parseInt(data.role),
+        store: {},
       };
 
-      if (data.role === "store") {
-        formattedData.store = {
-          name: data.storeName,
-          phone: data.storePhone,
-          tax_no: data.storeTaxId,
-          bank_account: data.storeBankAccount,
+      if (watch("role") === "2") {
+        formattedData = {
+          ...formattedData,
+          store: {
+            name: data.storeName,
+            phone: data.storePhone,
+            tax_no: data.storeTaxId,
+            bank_account: data.storeBankAccount,
+          },
         };
       }
 
@@ -72,264 +80,373 @@ const SignUp = () => {
               onSubmit={handleSubmit(onSubmit)}
               className="space-y-4 md:space-y-6"
             >
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`${
-                    errors.name ? "border-red-500" : "border-gray-300"
-                  } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
-     focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-      dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                  placeholder="Enter your name"
-                  minLength={3} // Minimum length validation
-                  required=""
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">
-                    Your name must contain at least 3 characters.
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className={`${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+              <Controller
+                name="name"
+                control={control}
+                rules={{
+                  required: "Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Your name must contain at least 3 characters.",
+                  },
+                }}
+                render={({ field }) => (
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Your name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      className={`${
+                        errors.name ? "border-red-500" : "border-gray-300"
+                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
          focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
           dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                  placeholder="name@company.com"
-                  required=""
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">
-                    Enter a valid email address.
-                  </p>
+                      placeholder="Enter your name"
+                      {...field}
+                      minLength={3} // Minimum length validation
+                      required=""
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.name.message}
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className={`${
-                    errors.password ? "border-red-500" : "border-gray-300"
-                  } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+              />
+              <Controller
+                name="email"
+                control={control}
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Enter a valid email address.",
+                  },
+                }}
+                render={({ field }) => (
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Your email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className={`${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
          focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
           dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                  minLength={8} // Minimum length validation
-                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" // Complex password pattern
-                  required=""
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">
-                    Password must be at least 8 characters long and include at
-                    least one lowercase letter, one uppercase letter, one
-                    number, and one special character.
-                  </p>
+                      placeholder="name@company.com"
+                      {...field}
+                      required=""
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
+              />
 
-              <div>
-                <label
-                  htmlFor="confirm-password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Confirm password
-                </label>
-                <input
-                  type="password"
-                  name="confirm-password"
-                  id="confirm-password"
-                  placeholder="••••••••"
-                  className={`${
-                    errors.confirmPassword
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
-         focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-          dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                  required=""
-                />
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-xs mt-1">
-                    Passwords must match.
-                  </p>
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must include at least one lowercase letter, one uppercase letter, one number, and one special character.",
+                  },
+                }}
+                render={({ field }) => (
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      className={`${
+                        errors.password ? "border-red-500" : "border-gray-300"
+                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+       focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+        dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="••••••••"
+                      {...field}
+                    />
+                    {errors.password && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
-              <div>
-                <label
-                  htmlFor="role"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Role
-                </label>
-                <Controller
-                  name="role"
-                  control={control}
-                  rules={{ required: "Role is required" }}
-                  render={({ field }) => (
+              />
+
+              <Controller
+                name="confirm-password"
+                control={control}
+                rules={{
+                  required: "Confirm password is required",
+                  validate: (value) =>
+                    value === watch("password") || "Passwords must match.",
+                }}
+                render={({ field }) => (
+                  <div>
+                    <label
+                      htmlFor="confirm-password"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Confirm password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirm-password"
+                      className={`${
+                        errors.confirmPassword
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+       focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+        dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="••••••••"
+                      {...field}
+                      required=""
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              <Controller
+                name="role"
+                control={control}
+                rules={{ required: "Role is required" }}
+                render={({ field }) => (
+                  <div>
+                    <label
+                      htmlFor="role"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Role
+                    </label>
                     <select
                       {...field}
                       className={`${
                         errors.role ? "border-red-500" : "border-gray-300"
                       } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
-                       focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                        dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+         focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+          dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       required=""
                     >
                       {roles.map((role) => (
-                        <option key={role.id} value={role.code}>
+                        <option key={role.id} value={role.id}>
                           {role.name}
                         </option>
                       ))}
                     </select>
-                  )}
-                />
-                {errors.role && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.role.message}
-                  </p>
+                    {errors.role && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.role.message}
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
-              {watch("role") === "store" && (
+              />
+
+              {watch("role") === "2" && (
                 <>
-                  <div>
-                    <label
-                      htmlFor="storeName"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Store Name
-                    </label>
-                    <input
-                      type="text"
-                      name="storeName"
-                      id="storeName"
-                      className={`${
-                        errors.storeName ? "border-red-500" : "border-gray-300"
-                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+                  <Controller
+                    name="storeName"
+                    control={control}
+                    rules={{
+                      required: "Store Name is required",
+                      minLength: {
+                        value: 3,
+                        message:
+                          "Store Name must contain at least 3 characters.",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <div>
+                        <label
+                          htmlFor="storeName"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Store Name
+                        </label>
+                        <input
+                          type="text"
+                          id="storeName"
+                          className={`${
+                            errors.storeName
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
       dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="Enter Store Name"
-                      minLength={3} // Minimum length validation
-                      required=""
-                    />
-                    {errors.storeName && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Store Name must contain at least 3 characters.
-                      </p>
+                          placeholder="Enter Store Name"
+                          {...field}
+                          minLength={3} // Minimum length validation
+                          required=""
+                        />
+                        {errors.storeName && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors.storeName.message}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
+                  />
 
-                  <div>
-                    <label
-                      htmlFor="storePhone"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Store Phone
-                    </label>
-                    <input
-                      type="tel"
-                      name="storePhone"
-                      id="storePhone"
-                      className={`${
-                        errors.storePhone ? "border-red-500" : "border-gray-300"
-                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+                  <Controller
+                    name="storePhone"
+                    control={control}
+                    rules={{
+                      required: "Store Phone is required",
+                      pattern: {
+                        value: /[0-9]{10}/,
+                        message: "Enter a valid Turkish phone number.",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <div>
+                        <label
+                          htmlFor="storePhone"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Store Phone
+                        </label>
+                        <input
+                          type="tel"
+                          id="storePhone"
+                          className={`${
+                            errors.storePhone
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
       dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="Enter Store Phone"
-                      pattern="[0-9]{10}" // Valid Turkish phone number pattern
-                      required=""
-                    />
-                    {errors.storePhone && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Enter a valid Turkish phone number.
-                      </p>
+                          placeholder="Enter Store Phone"
+                          {...field}
+                          pattern="[0-9]{10}"
+                          required=""
+                        />
+                        {errors.storePhone && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors.storePhone.message}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
+                  />
 
-                  <div>
-                    <label
-                      htmlFor="storeTaxId"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Store Tax ID
-                    </label>
-                    <input
-                      type="text"
-                      name="storeTaxId"
-                      id="storeTaxId"
-                      className={`${
-                        errors.storeTaxId ? "border-red-500" : "border-gray-300"
-                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+                  <Controller
+                    name="storeTaxId"
+                    control={control}
+                    // rules={{
+                    //   required: "Store Tax ID is required",
+                    //   pattern: {
+                    //     value: /^T[0-9]{9,10}$/,
+                    //     message:
+                    //       "Enter a valid Store Tax ID matching the pattern TXXXXVXXXXXX.",
+                    //   },
+                    // }}
+                    render={({ field }) => (
+                      <div>
+                        <label
+                          htmlFor="storeTaxId"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Store Tax ID
+                        </label>
+                        <input
+                          type="text"
+                          id="storeTaxId"
+                          className={`${
+                            errors.storeTaxId
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
       dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="TXXXXVXXXXXX"
-                      pattern="T[0-9]{9,10}" // Valid pattern for Store Tax ID
-                      required=""
-                    />
-                    {errors.storeTaxId && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Enter a valid Store Tax ID matching the pattern
-                        TXXXXVXXXXXX.
-                      </p>
+                          placeholder="TXXXXVXXXXXX"
+                          {...field}
+                          required=""
+                        />
+                        {errors.storeTaxId && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors.storeTaxId.message}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
+                  />
 
-                  <div>
-                    <label
-                      htmlFor="storeBankAccount"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Store Bank Account
-                    </label>
-                    <input
-                      type="text"
-                      name="storeBankAccount"
-                      id="storeBankAccount"
-                      className={`${
-                        errors.storeBankAccount
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+                  <Controller
+                    name="storeBankAccount"
+                    control={control}
+                    rules={{
+                      required: "Store Bank Account is required",
+                      pattern: {
+                        value:
+                          /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/,
+                        message:
+                          "Enter a valid IBAN for the Store Bank Account.",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <div>
+                        <label
+                          htmlFor="storeBankAccount"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Store Bank Account
+                        </label>
+                        <input
+                          type="text"
+                          id="storeBankAccount"
+                          className={`${
+                            errors.storeBankAccount
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
       dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="Enter Store Bank Account (IBAN)"
-                      // Add IBAN validation pattern (customize as needed)
-                      pattern="[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}"
-                      required=""
-                    />
-                    {errors.storeBankAccount && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Enter a valid IBAN for the Store Bank Account.
-                      </p>
+                          placeholder="Enter Store Bank Account (IBAN)"
+                          {...field}
+                          required=""
+                        />
+                        {errors.storeBankAccount && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors.storeBankAccount.message}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
+                  />
                 </>
               )}
 
