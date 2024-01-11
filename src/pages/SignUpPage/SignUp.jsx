@@ -257,7 +257,6 @@ const SignUp = () => {
                       Role
                     </label>
                     <select
-                      {...field}
                       className={`${
                         errors.role ? "border-red-500" : "border-gray-300"
                       } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
@@ -372,11 +371,11 @@ const SignUp = () => {
                     control={control}
                     rules={{
                       required: "Store Tax ID is required",
-                      pattern: {
-                        value: /^T[0-9]{9,10}$/,
-                        message:
-                          "Enter a valid Store Tax ID matching the pattern TXXXXVXXXXXX.",
-                      },
+                      // pattern: {
+                      //   value: /^T[0-9]{9,10}$/,
+                      //   message:
+                      //     "Enter a valid Store Tax ID matching the pattern TXXXXVXXXXXX.",
+                      // },
                     }}
                     render={({ field }) => (
                       <div>
