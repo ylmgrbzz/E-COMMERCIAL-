@@ -247,7 +247,9 @@ const SignUp = () => {
               <Controller
                 name="role"
                 control={control}
-                rules={{ required: "Role is required" }}
+                rules={
+                  watch("role") !== "1" ? { required: "Role is required" } : {}
+                }
                 render={({ field }) => (
                   <div>
                     <label
@@ -257,6 +259,7 @@ const SignUp = () => {
                       Role
                     </label>
                     <select
+                      {...field}
                       className={`${
                         errors.role ? "border-red-500" : "border-gray-300"
                       } bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
@@ -264,6 +267,9 @@ const SignUp = () => {
           dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       required=""
                     >
+                      <option value="" disabled selected>
+                        Select a role
+                      </option>
                       {roles.map((role) => (
                         <option key={role.id} value={role.id}>
                           {role.name}
