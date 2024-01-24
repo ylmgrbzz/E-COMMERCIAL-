@@ -66,6 +66,7 @@ import SignUp from "./pages/SignUpPage/SignUp";
 import { useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import AllProduct from "./pages/ProductPages/Product";
+import ProductItemsDetailPage from "./pages/ProductItemsDetailPage/ProductItemsDetailPage";
 
 function App() {
   const location = useLocation();
@@ -87,6 +88,10 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/product" element={<AllProduct />} />
+        <Route
+          path="/:category/:productId/:productNameSlug"
+          element={<ProductItemsDetailPage />}
+        />
       </Routes>
       <Footer />
     </>

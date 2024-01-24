@@ -4,9 +4,7 @@ import { IoLogoInstagram } from "react-icons/io5";
 import { FaTwitter } from "react-icons/fa";
 
 function Footer() {
-  function onFormSubmit(event) {
-    console.log("afadfa");
-  }
+  function onFormSubmit(event) {}
   return (
     <>
       <div className="bg-alabaster-50 my-12">
