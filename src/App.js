@@ -85,8 +85,6 @@ function App() {
         <Route path="/team" element={<Squat />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/product" element={<AllProduct />} />
       </Routes>
       {/* {!isSignUpPage && <Footer />} */}
       <Footer />
