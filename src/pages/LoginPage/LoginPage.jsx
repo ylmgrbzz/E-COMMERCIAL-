@@ -1,8 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import api from "../../api/api";
+import "react-toastify/dist/ReactToastify.css";
+import { loginUser } from "../../store/actions/userActions";
+import { FETCH_STATES } from "../../store/reducers/productReducers";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const [showAlert, setShowAlert] = useState(false);
+
+  const loading = useSelector(
+    (s) => s.user.fetchState === FETCH_STATES.fetching
+  );
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    const loginInfo = {
+      email: data.email,
+      password: data.password,
+    };
+
+    try {
+      dispatch(loginUser(loginInfo, navigate));
+    } catch (error) {
+      setShowAlert(true);
+    }
+  };
+
   return (
     <div className="flex mx-auto justify-center my-20">
+      {showAlert && (
+        <div
+          className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4"
+          role="alert"
+        >
+          <p className="font-bold">Authentication failed</p>
+          <p>Invalid email or password. Please try again.</p>
+        </div>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <div className="mx-auto flex flex-wrap justify-center ">
           <div className="w-full px-6 -mx-3 mb-6 ">
