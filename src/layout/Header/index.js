@@ -13,6 +13,7 @@ import { CiSearch } from "react-icons/ci";
 import { IoMenuOutline } from "react-icons/io5";
 import { IoPersonSharp } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 const HeaderInfo = () => {
   return (
@@ -41,6 +42,14 @@ const HeaderInfo = () => {
 };
 
 const Navigation = () => {
+  const navigate = useNavigate();
+
+  const handleSignout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
+  const isTokenAvailable = localStorage.getItem("token");
   const [showNavigation, setShowNavigation] = useState(false);
   console.log(showNavigation);
   return (
@@ -154,11 +163,26 @@ const Navigation = () => {
             </ul>
           </div>
           <div className="lg:flex gap-3 hidden">
-            <IoPersonSharp className="my-auto text-2xl" />
-            <Link to="/signup">
-              Login/Register
-              <p className="px-4 hover:bg-white-200 sm:text-xl text-3xl text-blue-500 font-semibold hover:cursor-pointer py-3"></p>
-            </Link>
+            {isTokenAvailable ? (
+              // Eğer token varsa Signout bağlantısını göster
+              <Link to="#" onClick={handleSignout}>
+                Signout
+                <p className="px-4 hover:bg-white-200 sm:text-xl text-3xl text-blue-500 font-semibold hover:cursor-pointer py-3"></p>
+              </Link>
+            ) : (
+              // Eğer token yoksa Register ve Login bağlantılarını göster
+              <>
+                <IoPersonSharp className="my-auto text-2xl" />
+                <Link to="/signup">
+                  Register
+                  <p className="px-4 hover:bg-white-200 sm:text-xl text-3xl text-blue-500 font-semibold hover:cursor-pointer py-3"></p>
+                </Link>
+                <Link to="/login">
+                  Login
+                  <p className="px-4 hover:bg-white-200 sm:text-xl text-3xl text-blue-500 font-semibold hover:cursor-pointer py-3"></p>
+                </Link>
+              </>
+            )}
             <CiSearch className="my-auto text-3xl" />
             <CiShoppingCart className="my-auto text-3xl" />
             <CiHeart className="my-auto text-3xl" />

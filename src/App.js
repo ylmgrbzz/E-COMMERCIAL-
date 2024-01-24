@@ -64,6 +64,7 @@ import Contact from "./pages/ContactPage";
 import Squat from "./pages/SquatPage";
 import SignUp from "./pages/SignUpPage/SignUp";
 import { useLocation } from "react-router-dom";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 function App() {
   const location = useLocation();
@@ -83,6 +84,7 @@ function App() {
         <Route path="/team" element={<Squat />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       {/* {!isSignUpPage && <Footer />} */}
       <Footer />
